@@ -1,5 +1,7 @@
 package com.lcm.bezierbottomIndicator;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -29,6 +31,8 @@ import java.util.List;
 public class BezierBottomIndicator extends ViewGroup {
 
     private static final String TAG = "BezierBottomIndicator";
+
+    private boolean isAnimitorStart = false;
 
     private int width = 0;
     private int height = 0;
@@ -201,10 +205,11 @@ public class BezierBottomIndicator extends ViewGroup {
 
 
     private void onClickIndex(int position) {
-        startAnimator(position); //开始动画
-
-        currentPosition = position;
-        Log.i(TAG, "点击了第 " + position + " 项！");
+        if (!isAnimitorStart) {
+            startAnimator(position); //开始动画
+            currentPosition = position;
+            Log.i(TAG, "点击了第 " + position + " 项！");
+        }
     }
 
     //绘制子View的背景
@@ -220,34 +225,50 @@ public class BezierBottomIndicator extends ViewGroup {
         }
     }
 
+    /**
+     * 切换动画
+     * @param targetPosition
+     */
     private void startAnimator(int targetPosition) {
         bezierCircular.setCurrentAndTarget(anchorList.get(currentPosition), anchorList.get(targetPosition));
-
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, targetPosition > currentPosition ? 1 : -1);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                // Log.i(TAG, (Float) animation.getAnimatedValue() + "");
                 bezierCircular.setProgress((Float) animation.getAnimatedValue());
-
                 postInvalidate();
             }
         });
 
-//        valueAnimator.setInterpolator(new OvershootInterpolator(3f));
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isAnimitorStart = true;
+                super.onAnimationStart(animation);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isAnimitorStart = false;
+                super.onAnimationEnd(animation);
+            }
+        });
 
         int count = Math.abs(targetPosition - currentPosition);
+        if (count == 0) {
+            return;
+        }
+
         int duration = 1000;
         if (count == 1) {
-            duration = 1000;
+            duration = 800;
         } else if (count == 2) {
-            duration = 1200;
+            duration = 1000;
         } else if (count == 3) {
-            duration = 1400;
+            duration = 1200;
         }
         valueAnimator.setDuration(duration);
-
         valueAnimator.start();
-
     }
 }

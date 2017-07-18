@@ -42,5 +42,11 @@
             android:scaleType="fitCenter"
             android:src="@mipmap/ic_launcher_round" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
     </com.lcm.bezierbottomIndicator.BezierBottomIndicator>
 </LinearLayout>
