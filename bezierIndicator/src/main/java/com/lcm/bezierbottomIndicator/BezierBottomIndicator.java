@@ -1,5 +1,6 @@
 package com.lcm.bezierbottomIndicator;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -8,9 +9,11 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.OvershootInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +42,11 @@ public class BezierBottomIndicator extends ViewGroup {
     private List<PointF> anchorList;
     private Paint childBgPaint;
 
+    private Paint bezierPaint;
+    private BezierCircular bezierCircular;
+
+    private int checkIndex = 0;
+    private int currentPosition = 0;
 
     public BezierBottomIndicator(Context context) {
         this(context, null);
@@ -80,6 +88,14 @@ public class BezierBottomIndicator extends ViewGroup {
         childBgPaint.setAntiAlias(true);
         childBgPaint.setStrokeWidth(1);
         childBgPaint.setStyle(Paint.Style.STROKE);
+
+
+        bezierPaint = new Paint();
+        bezierPaint.setColor(Color.YELLOW);
+        bezierPaint.setAntiAlias(true);
+        bezierPaint.setStyle(Paint.Style.FILL);
+
+
     }
 
 
@@ -112,6 +128,7 @@ public class BezierBottomIndicator extends ViewGroup {
             childSideLength = (width - getPaddingRight() - getPaddingLeft()) / getChildCount() > height - getPaddingBottom() - getPaddingTop() ? height - getPaddingBottom() - getPaddingTop() : (width - getPaddingLeft() - getPaddingRight()) / getChildCount();
 //        //计算出所有的ChildView的宽和高
             measureChildren(widthMeasureSpec, heightMeasureSpec);
+            bezierCircular = new BezierCircular(childSideLength / 2);
         }
 
         setMeasuredDimension(width, height);
@@ -130,6 +147,7 @@ public class BezierBottomIndicator extends ViewGroup {
         float cWidth = childSideLength - 2 * childpadding;
         float cHeight = cWidth;
 
+        anchorList.clear();
         //计算子控件的位置，强制将子View控制绘制在均分的几个锚点上
         for (int i = 0; i < childCount; i++) {
 
@@ -140,17 +158,54 @@ public class BezierBottomIndicator extends ViewGroup {
 
             childView.layout((int) (anchorPoint.x - cWidth / 2), (int) (anchorPoint.y - cHeight / 2), (int) (anchorPoint.x + cWidth / 2), (int) (anchorPoint.y + cHeight / 2));
         }
+        PointF pointF = anchorList.get(0);
+        bezierCircular.setCenter(pointF.x, pointF.y);
+        bezierCircular.initCotrlPoint();
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
 
+        bezierCircular.drawCircle(canvas, bezierPaint);
         drawChildBg(canvas);
         super.onDraw(canvas);
 
     }
 
+
+    float touchX = 0;
+    float touchY = 0;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                touchX = event.getX();
+                touchY = event.getY();
+                break;
+
+            case MotionEvent.ACTION_UP:
+                Log.i(TAG, "touchX: " + touchX + "  touchY: " + touchY);
+                for (int i = 0; i < anchorList.size(); i++) {
+                    PointF pointF = anchorList.get(i);
+                    if (touchX > (pointF.x - childSideLength / 2) && touchX < (pointF.x + childSideLength / 2) && touchY > (pointF.y - childSideLength / 2) && touchY < (pointF.y + childSideLength / 2)) {
+                        checkIndex = i;
+                        onClickIndex(checkIndex);
+                    }
+                }
+                break;
+        }
+        return true;
+    }
+
+
+    private void onClickIndex(int position) {
+        startAnimator(position); //开始动画
+
+        currentPosition = position;
+        Log.i(TAG, "点击了第 " + position + " 项！");
+    }
 
     //绘制子View的背景
     private void drawChildBg(Canvas canvas) {
@@ -163,5 +218,36 @@ public class BezierBottomIndicator extends ViewGroup {
             PointF pointF = anchorList.get(i);
             canvas.drawCircle(pointF.x, pointF.y, (childSideLength - 2) / 2, childBgPaint);
         }
+    }
+
+    private void startAnimator(int targetPosition) {
+        bezierCircular.setCurrentAndTarget(anchorList.get(currentPosition), anchorList.get(targetPosition));
+
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, targetPosition > currentPosition ? 1 : -1);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Log.i(TAG, (Float) animation.getAnimatedValue() + "");
+                bezierCircular.setProgress((Float) animation.getAnimatedValue());
+
+                postInvalidate();
+            }
+        });
+
+//        valueAnimator.setInterpolator(new OvershootInterpolator(3f));
+
+        int count = Math.abs(targetPosition - currentPosition);
+        int duration = 1000;
+        if (count == 1) {
+            duration = 1000;
+        } else if (count == 2) {
+            duration = 1200;
+        } else if (count == 3) {
+            duration = 1400;
+        }
+        valueAnimator.setDuration(duration);
+
+        valueAnimator.start();
+
     }
 }

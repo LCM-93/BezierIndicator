@@ -13,8 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="#999999"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:paddingBottom="14dp"
+        android:paddingTop="14dp"
         app:childPading="12dp"
         app:leftRightGap="20dp">
 
