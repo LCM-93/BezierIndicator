@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.lcm.bezierbottomIndicator.MainActivity">
+
+
+    <com.lcm.bezierbottomIndicator.BezierBottomIndicator
+        android:id="@+id/bezierBottomIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#999999"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        app:childPading="12dp"
+        app:leftRightGap="20dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_launcher" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_launcher_round" />
+
+    </com.lcm.bezierbottomIndicator.BezierBottomIndicator>
+</LinearLayout>
