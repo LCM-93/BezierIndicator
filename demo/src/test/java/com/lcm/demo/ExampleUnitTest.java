@@ -1,4 +1,4 @@
-package com.lcm.bezierbottomIndicator;
+package com.lcm.demo;
 
 import org.junit.Test;
 

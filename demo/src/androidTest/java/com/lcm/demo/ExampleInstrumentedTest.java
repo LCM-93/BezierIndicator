@@ -1,4 +1,4 @@
-package com.lcm.bezierbottomIndicator;
+package com.lcm.demo;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.lcm.bezierbottomgroup", appContext.getPackageName());
+        assertEquals("com.lcm.demo", appContext.getPackageName());
     }
 }

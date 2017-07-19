@@ -1,1 +1,1 @@
-include ':bezierIndicator'
+include ':bezierIndicator', ':demo'

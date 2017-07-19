@@ -1,4 +1,4 @@
-package com.lcm.bezierbottomIndicator;
+package com.lcm.demo;
 
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
+import com.lcm.bezierbottomIndicator.BezierBottomIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
     private BezierBottomIndicator bezierBottomIndicator;
 
     private ViewPager viewPager;
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         viewList = new ArrayList<>();
 
         bezierBottomIndicator = (BezierBottomIndicator) findViewById(R.id.bezierBottomIndicator);
@@ -52,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         bezierBottomIndicator.setViewPager(viewPager);
 
     }
+
 
     class MyAdapter extends PagerAdapter {
 
@@ -81,5 +85,4 @@ public class MainActivity extends AppCompatActivity {
             return POSITION_NONE;
         }
     }
-
 }
