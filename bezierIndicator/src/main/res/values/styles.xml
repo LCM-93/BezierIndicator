@@ -13,6 +13,7 @@
         <attr name="leftRightGap" format="dimension" />
         <attr name="childPadding" format="dimension" />
         <attr name="bgCircularColor" format="color" />
+        <attr name="defCircularColor" format="color" />
     </declare-styleable>
 
 </resources>

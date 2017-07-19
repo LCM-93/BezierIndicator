@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -45,6 +46,10 @@ public class BezierBottomIndicator extends ViewGroup {
     private float defaultLeftRightGap = 10; //左右两边默认的距离
 
     private int bgCircularColor = Color.parseColor("#aaaaaa");
+
+    private int circularColor = Color.parseColor("#3f51b5");
+
+    private List<Integer> circularColors;
 
 
     private List<PointF> anchorList;
@@ -83,6 +88,8 @@ public class BezierBottomIndicator extends ViewGroup {
                 childPadding = typedArray.getDimension(attr, 20);
             } else if (attr == R.styleable.BezierBottomIndicator_bgCircularColor) {
                 bgCircularColor = typedArray.getColor(attr, bgCircularColor);
+            } else if (attr == R.styleable.BezierBottomIndicator_defCircularColor) {
+                circularColor = typedArray.getColor(attr, circularColor);
             }
         }
         typedArray.recycle();
@@ -95,6 +102,7 @@ public class BezierBottomIndicator extends ViewGroup {
         setWillNotDraw(false);
 
         anchorList = new ArrayList<>();
+        circularColors = new ArrayList<>();
 
         childBgPaint = new Paint();
         childBgPaint.setColor(bgCircularColor);
@@ -104,9 +112,42 @@ public class BezierBottomIndicator extends ViewGroup {
 
 
         bezierPaint = new Paint();
-        bezierPaint.setColor(Color.parseColor("#FF4081"));
+        bezierPaint.setColor(circularColor);
         bezierPaint.setAntiAlias(true);
         bezierPaint.setStyle(Paint.Style.FILL);
+    }
+
+    /**
+     * 设置小球到每个位置到颜色
+     *
+     * @param colors
+     */
+    public void setCircularColors(@NonNull Integer... colors) {
+        int colorsLength = colors.length;
+
+        int childCount = getChildCount();
+
+        int a = childCount / colorsLength;
+        int b = childCount % colorsLength;
+
+        if (a > 0) {
+            for (int i = 0; i < a; i++) {
+                for (int j = 0; j < colorsLength; j++) {
+                    circularColors.add(colors[j]);
+                }
+            }
+        }
+        if (b > 0) {
+            for (int i = 0; i < b; i++) {
+                circularColors.add(colors[i]);
+            }
+        }
+
+        if (circularColors.size() > 0) {
+            bezierPaint.setColor(circularColors.get(currentPosition));
+            postInvalidate();
+        }
+        Log.i(TAG, "circularColors.size:::" + circularColors.size());
     }
 
 
@@ -174,6 +215,7 @@ public class BezierBottomIndicator extends ViewGroup {
 
     @Override
     protected void onDraw(Canvas canvas) {
+
         bezierCircular.drawCircle(canvas, bezierPaint);
         drawChildBg(canvas);
         super.onDraw(canvas);
@@ -237,6 +279,7 @@ public class BezierBottomIndicator extends ViewGroup {
                     currentPosition = targetPosition;
 
                     Log.i(TAG, "currentPosition::::" + currentPosition);
+                    bezierPaint.setColor(circularColors.size() > 0 ? circularColors.get(currentPosition) : circularColor);
                     bezierCircular.resetCircular(anchorList.get(currentPosition));
                     postInvalidate();
                 }
@@ -245,6 +288,9 @@ public class BezierBottomIndicator extends ViewGroup {
         });
     }
 
+
+    float lastProgress = 0;
+    float currentProgress = 0;
 
     //滑动ViewPager时更新指示器的动画
     private void updateDrop(int position, float positionOffset, int positionOffsetPixels) {
@@ -262,10 +308,23 @@ public class BezierBottomIndicator extends ViewGroup {
         if (direction) targetPosition = currentPosition + 1;
         else targetPosition = currentPosition - 1;
 
+        currentProgress = positionOffset;
+
         Log.e(TAG, "direction:::" + direction + "     currentPosition:::" + currentPosition + "     targetPosition:::" + targetPosition);
         bezierCircular.setCurrentAndTarget(anchorList.get(currentPosition), anchorList.get(targetPosition));
         bezierCircular.setProgress(direction ? positionOffset : positionOffset - 1);
+
+        if (currentProgress == 0 && lastProgress > 0.9) {
+            if (lastProgress > 0.9) {
+                currentProgress = 1;
+            }
+            if (lastProgress < 0.1) {
+                currentProgress = 0;
+            }
+        }
+        bezierPaint.setColor(circularColors.size() > 0 ? setCircularColor(direction ? currentProgress : 1 - currentProgress) : circularColor);
         invalidate();
+        lastProgress = currentProgress;
     }
 
 
@@ -305,6 +364,7 @@ public class BezierBottomIndicator extends ViewGroup {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 bezierCircular.setProgress((Float) animation.getAnimatedValue());
+                bezierPaint.setColor(circularColors.size() > 0 ? setCircularColor(Math.abs((Float) animation.getAnimatedValue())) : circularColor);
                 postInvalidate();
             }
         });
@@ -313,6 +373,7 @@ public class BezierBottomIndicator extends ViewGroup {
             @Override
             public void onAnimationEnd(Animator animation) {
                 currentPosition = targetPosition;
+                bezierPaint.setColor(circularColors.size() > 0 ? circularColors.get(currentPosition) : circularColor);
                 bezierCircular.resetCircular(anchorList.get(currentPosition));
                 isAnimatorStart = false;
                 postInvalidate();
@@ -327,5 +388,24 @@ public class BezierBottomIndicator extends ViewGroup {
         int duration = 600;
         valueAnimator.setDuration(duration);
         valueAnimator.start();
+    }
+
+
+    private int setCircularColor(float progress) {
+        // 3颜色等比线性变换
+        int startColor = circularColors.get(currentPosition);
+        int endColor = circularColors.get(targetPosition);
+
+        int redStart = Color.red(startColor);
+        int blueStart = Color.blue(startColor);
+        int greenStart = Color.green(startColor);
+        int redEnd = Color.red(endColor);
+        int blueEnd = Color.blue(endColor);
+        int greenEnd = Color.green(endColor);
+
+        int red = (int) (redStart + ((redEnd - redStart) * progress + 0.5));
+        int greed = (int) (greenStart + ((greenEnd - greenStart) * progress + 0.5));
+        int blue = (int) (blueStart + ((blueEnd - blueStart) * progress + 0.5));
+        return Color.argb(255, red, greed, blue);
     }
 }

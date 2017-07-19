@@ -1,5 +1,6 @@
 package com.lcm.bezierbottomIndicator;
 
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         myAdapter = new MyAdapter();
         viewPager.setAdapter(myAdapter);
+
+        bezierBottomIndicator.setCircularColors(Color.parseColor("#9c27b0"), Color.parseColor("#3f51b5"), Color.parseColor("#009688"), Color.parseColor("#ff9800"));
 
         bezierBottomIndicator.setViewPager(viewPager);
 
