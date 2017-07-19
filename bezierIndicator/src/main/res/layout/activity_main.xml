@@ -5,48 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.lcm.bezierbottomIndicator.MainActivity">
+    tools:context="com.lcm.bezierbottomIndicator.MainActivity"
+    android:background="#21293A">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+       >
+
+    </android.support.v4.view.ViewPager>
+
+
 
 
     <com.lcm.bezierbottomIndicator.BezierBottomIndicator
         android:id="@+id/bezierBottomIndicator"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#999999"
-        android:paddingBottom="14dp"
-        android:paddingTop="14dp"
-        app:childPading="12dp"
+        android:layout_height="60dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        app:childPadding="12dp"
         app:leftRightGap="20dp">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerInside"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/iv_camera" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@mipmap/iv_jiaojuan" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/iv_mine" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher_round" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/iv_message" />
 
     </com.lcm.bezierbottomIndicator.BezierBottomIndicator>
 </LinearLayout>

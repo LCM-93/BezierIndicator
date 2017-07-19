@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.util.Log;
 
 /**
  * ****************************************************************
@@ -14,6 +15,7 @@ import android.graphics.PointF;
  */
 
 public class BezierCircular {
+    private static final String TAG = "BezierCircular";
 
     private static final float C = 0.551915024494f; //常量
 
@@ -47,14 +49,14 @@ public class BezierCircular {
     public void setCenter(float centerX, float centerY) {
         this.centerX = centerX;
         this.centerY = centerY;
+
     }
 
 
     /**
-     * TO-DO
      * 更精细的绘制圆，绘制小球的回弹效果
      */
-    public void initCotrlPoint() {
+    public void initControlPoint() {
 
         //初始化数据点
         mData[0] = centerX;
@@ -115,31 +117,20 @@ public class BezierCircular {
         } else if ((progress > 0.9 && progress < 1) || (progress < -0.9 && progress > -1)) {
             model5(progress);
         } else if (progress >= 1 || progress <= -1) {
-            centerX = targetPoint.x;
-            centerY = targetPoint.y;
+//            Log.i(TAG,"-------------------------------------------");
+//            centerX = targetPoint.x;
+//            centerY = targetPoint.y;
+//            initCotrlPoint();
         }
     }
 
 
     public void model1(float progress) {
-        //初始化数据点
-//        mData[0] = centerX;
-//        mData[1] = centerY + radius;
-
         if (progress > 0)
             mData[2] = centerX + radius + stretchDistance * progress * 5;
-//        mData[3] = centerY;
 
-//        mData[4] = centerX;
-//        mData[5] = centerY - radius;
-//
         if (progress < 0)
             mData[6] = centerX - radius + stretchDistance * progress * 5;
-//        mData[7] = centerY;
-
-        //初始化控制点
-//        mCtrl[0] = mData[0] + mDifference;
-//        mCtrl[1] = mData[1];
 
         mCtrl[2] = mData[2];
         if (progress > 0)
@@ -149,55 +140,38 @@ public class BezierCircular {
         if (progress > 0)
             mCtrl[5] = mData[3] - mDifference - cDistance * progress * 5;
 
-//        mCtrl[6] = mData[4] + mDifference;
-//        mCtrl[7] = mData[5];
-//
-//        mCtrl[8] = mData[4] - mDifference;
-//        mCtrl[9] = mData[5];
-//
         mCtrl[10] = mData[6];
         if (progress < 0)
             mCtrl[11] = mData[7] - mDifference + cDistance * progress * 5;
-//
+
         mCtrl[12] = mData[6];
         if (progress < 0)
             mCtrl[13] = mData[7] + mDifference - cDistance * progress * 5;
-//
-//        mCtrl[14] = mData[0] - mDifference;
-//        mCtrl[15] = mData[1];
     }
 
     public void model2(float progress) {
         model1(progress > 0 ? 0.2f : -0.2f);
 
         progress = progress > 0 ? (progress - 0.2f) * (10f / 3) : (progress + 0.2f) * (10f / 3);
-
-
         //初始化数据点
         mData[0] = centerX + stretchDistance * progress;
-//        mData[1] = centerY + radius;
-
 
         if (progress > 0)
             mData[2] = centerX + radius + stretchDistance * (1 + progress);
         else
             mData[2] = centerX + radius;
-//        mData[3] = centerY;
 
 
         mData[4] = centerX + stretchDistance * progress;
-//        mData[5] = centerY - radius;
 
         if (progress < 0)
             mData[6] = centerX - radius - stretchDistance + stretchDistance * progress;
         else
             mData[6] = centerX - radius;
-//        mData[7] = centerY;
 
 
         //初始化控制点
         mCtrl[0] = mData[0] + mDifference;
-//        mCtrl[1] = mData[1];
 
         mCtrl[2] = mData[2];
         if (progress > 0)
@@ -213,17 +187,15 @@ public class BezierCircular {
 
 
         mCtrl[6] = mData[4] + mDifference;
-//        mCtrl[7] = mData[5];
 
         mCtrl[8] = mData[4] - mDifference;
-//        mCtrl[9] = mData[5];
 
         mCtrl[10] = mData[6];
         if (progress > 0)
             mCtrl[11] = mData[7] - mDifference - cDistance * progress;
         else
             mCtrl[11] = mData[7] - mDifference - cDistance;
-//
+
         mCtrl[12] = mData[6];
         if (progress > 0)
             mCtrl[13] = mData[7] + mDifference + cDistance * progress;
@@ -232,7 +204,6 @@ public class BezierCircular {
 
 
         mCtrl[14] = mData[0] - mDifference;
-//        mCtrl[15] = mData[1];
     }
 
     public void model3(float progress) {
@@ -245,32 +216,26 @@ public class BezierCircular {
         else
             mData[0] = centerX - moveDistance * progress - stretchDistance;
 
-        mData[1] = centerY + radius;
 
         if (progress > 0)
             mData[2] = centerX + moveDistance * progress + radius + 2 * stretchDistance;
         else
             mData[2] = centerX - moveDistance * progress + radius;
 
-        mData[3] = centerY;
 
         if (progress > 0)
             mData[4] = centerX + moveDistance * progress + stretchDistance;
         else
             mData[4] = centerX - moveDistance * progress - stretchDistance;
 
-        mData[5] = centerY - radius;
 
         if (progress > 0)
             mData[6] = centerX + moveDistance * progress - radius;
         else
             mData[6] = centerX - moveDistance * progress - radius - 2 * stretchDistance;
 
-        mData[7] = centerY;
-
         //初始化控制点
         mCtrl[0] = mData[0] + mDifference;
-        mCtrl[1] = mData[1];
 
         mCtrl[2] = mData[2];
         mCtrl[3] = mData[3] + mDifference + cDistance;
@@ -279,10 +244,8 @@ public class BezierCircular {
         mCtrl[5] = mData[3] - mDifference - cDistance;
 
         mCtrl[6] = mData[4] + mDifference;
-        mCtrl[7] = mData[5];
 
         mCtrl[8] = mData[4] - mDifference;
-        mCtrl[9] = mData[5];
 
         mCtrl[10] = mData[6];
         mCtrl[11] = mData[7] - mDifference - cDistance;
@@ -291,7 +254,6 @@ public class BezierCircular {
         mCtrl[13] = mData[7] + mDifference + cDistance;
 
         mCtrl[14] = mData[0] - mDifference;
-        mCtrl[15] = mData[1];
     }
 
     public void model4(float progress) {
@@ -306,29 +268,24 @@ public class BezierCircular {
             mData[0] = centerX + moveDistance + stretchDistance + stretchDistance * progress;
         else
             mData[0] = centerX + moveDistance - stretchDistance + stretchDistance * progress;
-        mData[1] = centerY + radius;
 
         if (progress > 0)
             mData[2] = centerX + moveDistance + radius + 2 * stretchDistance;
         else
             mData[2] = centerX + moveDistance + radius + stretchDistance * progress;
-        mData[3] = centerY;
 
         if (progress > 0)
             mData[4] = centerX + moveDistance + stretchDistance + stretchDistance * progress;
         else
             mData[4] = centerX + moveDistance - stretchDistance + stretchDistance * progress;
-        mData[5] = centerY - radius;
 
         if (progress > 0)
             mData[6] = centerX + moveDistance - radius + stretchDistance * progress;
         else
             mData[6] = centerX + moveDistance - radius - 2 * stretchDistance;
-        mData[7] = centerY;
 
         //初始化控制点
         mCtrl[0] = mData[0] + mDifference;
-        mCtrl[1] = mData[1];
 
         mCtrl[2] = mData[2];
         if (progress > 0)
@@ -343,10 +300,8 @@ public class BezierCircular {
             mCtrl[5] = mData[3] - mDifference - cDistance;
 
         mCtrl[6] = mData[4] + mDifference;
-        mCtrl[7] = mData[5];
 
         mCtrl[8] = mData[4] - mDifference;
-        mCtrl[9] = mData[5];
 
         mCtrl[10] = mData[6];
         if (progress > 0)
@@ -361,9 +316,6 @@ public class BezierCircular {
             mCtrl[13] = mData[7] + mDifference + cDistance + cDistance * progress;
 
         mCtrl[14] = mData[0] - mDifference;
-        mCtrl[15] = mData[1];
-
-
     }
 
     public void model5(float progress) {
@@ -376,31 +328,26 @@ public class BezierCircular {
             mData[0] = centerX + moveDistance + 2 * stretchDistance;
         else
             mData[0] = centerX + moveDistance - 2 * stretchDistance;
-        mData[1] = centerY + radius;
 
         if (progress > 0)
             mData[2] = centerX + moveDistance + radius + 2 * stretchDistance;
         else
             mData[2] = (float) (centerX + moveDistance + radius - stretchDistance - (Math.sin(Math.PI * 3 / 2 * Math.abs(progress) - Math.PI / 2) + 1) * stretchDistance);
 
-        mData[3] = centerY;
 
         if (progress > 0)
             mData[4] = centerX + moveDistance + 2 * stretchDistance;
         else
             mData[4] = centerX + moveDistance - 2 * stretchDistance;
-        mData[5] = centerY - radius;
 
         if (progress > 0)
             mData[6] = (float) (centerX + moveDistance - radius + stretchDistance + (Math.sin(Math.PI * 3 / 2 * progress - Math.PI / 2) + 1) * stretchDistance);
         else
             mData[6] = centerX + moveDistance - radius - 2 * stretchDistance;
 
-        mData[7] = centerY;
 
         //初始化控制点
         mCtrl[0] = mData[0] + mDifference;
-        mCtrl[1] = mData[1];
 
         mCtrl[2] = mData[2];
         if (progress < 0)
@@ -411,10 +358,8 @@ public class BezierCircular {
             mCtrl[5] = mData[3] - mDifference - cDistance - cDistance * progress;
 
         mCtrl[6] = mData[4] + mDifference;
-        mCtrl[7] = mData[5];
 
         mCtrl[8] = mData[4] - mDifference;
-        mCtrl[9] = mData[5];
 
         mCtrl[10] = mData[6];
         if (progress > 0)
@@ -425,13 +370,10 @@ public class BezierCircular {
             mCtrl[13] = mData[7] + mDifference + cDistance - cDistance * progress;
 
         mCtrl[14] = mData[0] - mDifference;
-        mCtrl[15] = mData[1];
-
     }
 
 
     /**
-     * TO-DO
      * 通过三阶贝塞尔曲线更精细的绘制圆，绘制小球的回弹效果
      *
      * @param canvas
@@ -449,5 +391,10 @@ public class BezierCircular {
         canvas.drawPath(path, mPaint);
     }
 
+
+    public void resetCircular(PointF pointF) {
+        setCenter(pointF.x, pointF.y);
+        initControlPoint();
+    }
 
 }

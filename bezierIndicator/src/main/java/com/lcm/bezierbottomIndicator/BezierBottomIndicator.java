@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,15 +33,18 @@ public class BezierBottomIndicator extends ViewGroup {
 
     private static final String TAG = "BezierBottomIndicator";
 
-    private boolean isAnimitorStart = false;
+    private boolean isAnimatorStart = false;
+    private boolean isViewPagerScoll = false;
 
     private int width = 0;
     private int height = 0;
 
     private int childSideLength = 0;  //子view外框的边长
-    private float childpadding = 20;  //子View的Padding值
+    private float childPadding = 20;  //子View的Padding值
 
     private float defaultLeftRightGap = 10; //左右两边默认的距离
+
+    private int bgCircularColor = Color.parseColor("#aaaaaa");
 
 
     private List<PointF> anchorList;
@@ -49,8 +53,11 @@ public class BezierBottomIndicator extends ViewGroup {
     private Paint bezierPaint;
     private BezierCircular bezierCircular;
 
-    private int checkIndex = 0;
     private int currentPosition = 0;
+    boolean direction = true;
+    int targetPosition = 0;
+
+    private ViewPager viewPager;
 
     public BezierBottomIndicator(Context context) {
         this(context, null);
@@ -72,8 +79,10 @@ public class BezierBottomIndicator extends ViewGroup {
 
             if (attr == R.styleable.BezierBottomIndicator_leftRightGap) {
                 defaultLeftRightGap = typedArray.getDimension(attr, 10);
-            } else if (attr == R.styleable.BezierBottomIndicator_childPading) {
-                childpadding = typedArray.getDimension(attr, 20);
+            } else if (attr == R.styleable.BezierBottomIndicator_childPadding) {
+                childPadding = typedArray.getDimension(attr, 20);
+            } else if (attr == R.styleable.BezierBottomIndicator_bgCircularColor) {
+                bgCircularColor = typedArray.getColor(attr, bgCircularColor);
             }
         }
         typedArray.recycle();
@@ -88,18 +97,16 @@ public class BezierBottomIndicator extends ViewGroup {
         anchorList = new ArrayList<>();
 
         childBgPaint = new Paint();
-        childBgPaint.setColor(Color.WHITE);
+        childBgPaint.setColor(bgCircularColor);
         childBgPaint.setAntiAlias(true);
-        childBgPaint.setStrokeWidth(1);
+        childBgPaint.setStrokeWidth(2);
         childBgPaint.setStyle(Paint.Style.STROKE);
 
 
         bezierPaint = new Paint();
-        bezierPaint.setColor(Color.YELLOW);
+        bezierPaint.setColor(Color.parseColor("#FF4081"));
         bezierPaint.setAntiAlias(true);
         bezierPaint.setStyle(Paint.Style.FILL);
-
-
     }
 
 
@@ -148,33 +155,28 @@ public class BezierBottomIndicator extends ViewGroup {
 
         float childDis = (width - getPaddingLeft() - getPaddingRight() - 2 * defaultLeftRightGap - childSideLength) / (childCount - 1);
 
-        float cWidth = childSideLength - 2 * childpadding;
+        float cWidth = childSideLength - 2 * childPadding;
         float cHeight = cWidth;
 
         anchorList.clear();
         //计算子控件的位置，强制将子View控制绘制在均分的几个锚点上
         for (int i = 0; i < childCount; i++) {
-
             View childView = getChildAt(i);
-
             PointF anchorPoint = new PointF((childDis * i + defaultLeftRightGap + childSideLength / 2 + getPaddingLeft()), getPaddingTop() + childSideLength / 2);
             anchorList.add(anchorPoint);
-
             childView.layout((int) (anchorPoint.x - cWidth / 2), (int) (anchorPoint.y - cHeight / 2), (int) (anchorPoint.x + cWidth / 2), (int) (anchorPoint.y + cHeight / 2));
         }
         PointF pointF = anchorList.get(0);
         bezierCircular.setCenter(pointF.x, pointF.y);
-        bezierCircular.initCotrlPoint();
+        bezierCircular.initControlPoint();
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
-
         bezierCircular.drawCircle(canvas, bezierPaint);
         drawChildBg(canvas);
         super.onDraw(canvas);
-
     }
 
 
@@ -194,8 +196,7 @@ public class BezierBottomIndicator extends ViewGroup {
                 for (int i = 0; i < anchorList.size(); i++) {
                     PointF pointF = anchorList.get(i);
                     if (touchX > (pointF.x - childSideLength / 2) && touchX < (pointF.x + childSideLength / 2) && touchY > (pointF.y - childSideLength / 2) && touchY < (pointF.y + childSideLength / 2)) {
-                        checkIndex = i;
-                        onClickIndex(checkIndex);
+                        onClickIndex(i);
                     }
                 }
                 break;
@@ -204,10 +205,79 @@ public class BezierBottomIndicator extends ViewGroup {
     }
 
 
+    private boolean isSelected = false;
+
+    public void setViewPager(ViewPager viewPager) {
+        this.viewPager = viewPager;
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (anchorList != null && anchorList.size() > 0 && !isAnimatorStart) {
+                    isViewPagerScoll = true;
+                    updateDrop(position, positionOffset, positionOffsetPixels);
+                }
+                // 页面正在滚动时不断调用
+                Log.d(TAG, "onPageScrolled————>" + "    position：" + position + "    positionOffest：" + positionOffset + "    positionOffsetPixels：" + positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+//                Log.d(TAG, "onPagerSelected————>    position：" + position);
+                isSelected = true;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == 0 && isSelected && !isAnimatorStart) {
+//                    Log.e(TAG, "onPageScrollStateChanged————>    设置状态：");
+                    isSelected = false;
+                    isViewPagerScoll = false;
+                    bezierCircular.setProgress(direction ? 1.0f : -1.0f);
+                    currentPosition = targetPosition;
+
+                    Log.i(TAG, "currentPosition::::" + currentPosition);
+                    bezierCircular.resetCircular(anchorList.get(currentPosition));
+                    postInvalidate();
+                }
+                Log.i(TAG, "onPageScrollStateChanged————>    state：" + state);
+            }
+        });
+    }
+
+
+    //滑动ViewPager时更新指示器的动画
+    private void updateDrop(int position, float positionOffset, int positionOffsetPixels) {
+        if ((position + positionOffset) - currentPosition > 0) {
+            direction = true;
+        } else if ((position + positionOffset) - currentPosition < 0) {
+            direction = false;
+        }
+
+        //防止数组越界
+        if ((!direction && currentPosition - 1 < 0) || (direction && currentPosition + 1 > getChildCount() - 1)) {
+            return;
+        }
+
+        if (direction) targetPosition = currentPosition + 1;
+        else targetPosition = currentPosition - 1;
+
+        Log.e(TAG, "direction:::" + direction + "     currentPosition:::" + currentPosition + "     targetPosition:::" + targetPosition);
+        bezierCircular.setCurrentAndTarget(anchorList.get(currentPosition), anchorList.get(targetPosition));
+        bezierCircular.setProgress(direction ? positionOffset : positionOffset - 1);
+        invalidate();
+    }
+
+
     private void onClickIndex(int position) {
-        if (!isAnimitorStart) {
-            startAnimator(position); //开始动画
-            currentPosition = position;
+        if (!isAnimatorStart && !isViewPagerScoll) {
+            targetPosition = position;
+            isAnimatorStart = true;
+            startAnimator(); //开始动画
+            if (viewPager != null) {
+                viewPager.setCurrentItem(position);
+            }
+//            currentPosition = position;
             Log.i(TAG, "点击了第 " + position + " 项！");
         }
     }
@@ -221,15 +291,14 @@ public class BezierBottomIndicator extends ViewGroup {
 
         for (int i = 0; i < anchorList.size(); i++) {
             PointF pointF = anchorList.get(i);
-            canvas.drawCircle(pointF.x, pointF.y, (childSideLength - 2) / 2, childBgPaint);
+            canvas.drawCircle(pointF.x, pointF.y, (childSideLength - 4) / 2, childBgPaint);
         }
     }
 
     /**
      * 切换动画
-     * @param targetPosition
      */
-    private void startAnimator(int targetPosition) {
+    private void startAnimator() {
         bezierCircular.setCurrentAndTarget(anchorList.get(currentPosition), anchorList.get(targetPosition));
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, targetPosition > currentPosition ? 1 : -1);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -241,16 +310,12 @@ public class BezierBottomIndicator extends ViewGroup {
         });
 
         valueAnimator.addListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                isAnimitorStart = true;
-                super.onAnimationStart(animation);
-            }
-
             @Override
             public void onAnimationEnd(Animator animation) {
-                isAnimitorStart = false;
+                currentPosition = targetPosition;
+                bezierCircular.resetCircular(anchorList.get(currentPosition));
+                isAnimatorStart = false;
+                postInvalidate();
                 super.onAnimationEnd(animation);
             }
         });
@@ -259,15 +324,7 @@ public class BezierBottomIndicator extends ViewGroup {
         if (count == 0) {
             return;
         }
-
-        int duration = 1000;
-        if (count == 1) {
-            duration = 800;
-        } else if (count == 2) {
-            duration = 1000;
-        } else if (count == 3) {
-            duration = 1200;
-        }
+        int duration = 600;
         valueAnimator.setDuration(duration);
         valueAnimator.start();
     }

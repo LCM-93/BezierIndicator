@@ -10,9 +10,9 @@
 
 
     <declare-styleable name="BezierBottomIndicator">
-        <attr name="leftRightGap" format="dimension"/>
-        <attr name="childPading" format="dimension"/>
-
+        <attr name="leftRightGap" format="dimension" />
+        <attr name="childPadding" format="dimension" />
+        <attr name="bgCircularColor" format="color" />
     </declare-styleable>
 
 </resources>
