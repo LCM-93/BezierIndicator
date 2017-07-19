@@ -32,22 +32,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         ImageView imageView1 = new ImageView(getApplicationContext());
-        imageView1.setImageResource(R.mipmap.iv_1);
+        imageView1.setImageResource(R.mipmap.pos0);
         viewList.add(imageView1);
         ImageView imageView2 = new ImageView(getApplicationContext());
-        imageView2.setImageResource(R.mipmap.iv_2);
+        imageView2.setImageResource(R.mipmap.pos1);
         viewList.add(imageView2);
         ImageView imageView3 = new ImageView(getApplicationContext());
-        imageView3.setImageResource(R.mipmap.iv_3);
+        imageView3.setImageResource(R.mipmap.pos2);
         viewList.add(imageView3);
         ImageView imageView4 = new ImageView(getApplicationContext());
-        imageView4.setImageResource(R.mipmap.iv_4);
+        imageView4.setImageResource(R.mipmap.pos3);
         viewList.add(imageView4);
 
         myAdapter = new MyAdapter();
         viewPager.setAdapter(myAdapter);
 
-        bezierBottomIndicator.setCircularColors(Color.parseColor("#9c27b0"), Color.parseColor("#3f51b5"), Color.parseColor("#009688"), Color.parseColor("#ff9800"));
+        bezierBottomIndicator.setCircularColors(Color.parseColor("#FCC04D"), Color.parseColor("#00C3E2"), Color.parseColor("#FE626D"), Color.parseColor("#966ACF"));
 
         bezierBottomIndicator.setViewPager(viewPager);
 

@@ -223,9 +223,12 @@ public class BezierBottomIndicator extends ViewGroup {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        bezierCircular.drawCircle(canvas, bezierPaint);
-        drawClick(canvas);
+
+
         drawChildBg(canvas);
+        bezierCircular.drawCircle(canvas, bezierPaint);
+
+        drawClick(canvas);
         super.onDraw(canvas);
     }
 
@@ -418,7 +421,7 @@ public class BezierBottomIndicator extends ViewGroup {
                 float progress = (float) animation.getAnimatedValue();
 
                 clickRadius = (childSideLength / 3) * progress;
-                clickPaint.setStrokeWidth(childSideLength / 3 * progress);
+                clickPaint.setStrokeWidth(childSideLength / 4 * progress);
                 postInvalidate();
             }
         });
