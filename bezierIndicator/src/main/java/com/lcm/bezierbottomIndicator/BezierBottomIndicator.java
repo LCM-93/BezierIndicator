@@ -45,9 +45,9 @@ public class BezierBottomIndicator extends ViewGroup {
 
     private float defaultLeftRightGap = 10; //左右两边默认的距离
 
-    private int bgCircularColor = Color.parseColor("#aaaaaa");
+    private int bgCircularColor = Color.parseColor("#aaaaaa");  //背景圆环颜色
 
-    private int circularColor = Color.parseColor("#3f51b5");
+    private int circularColor = Color.parseColor("#3f51b5");  //贝塞尔球的默认颜色
 
     private List<Integer> circularColors;
 
@@ -57,6 +57,8 @@ public class BezierBottomIndicator extends ViewGroup {
 
     private Paint bezierPaint;
     private BezierCircular bezierCircular;
+
+    private Paint clickPaint;
 
     private int currentPosition = 0;
     boolean direction = true;
@@ -93,7 +95,6 @@ public class BezierBottomIndicator extends ViewGroup {
             }
         }
         typedArray.recycle();
-
     }
 
 
@@ -115,6 +116,12 @@ public class BezierBottomIndicator extends ViewGroup {
         bezierPaint.setColor(circularColor);
         bezierPaint.setAntiAlias(true);
         bezierPaint.setStyle(Paint.Style.FILL);
+
+        clickPaint = new Paint();
+        clickPaint.setAntiAlias(true);
+        clickPaint.setStyle(Paint.Style.STROKE);
+        clickPaint.setColor(Color.WHITE);
+        clickPaint.setStrokeWidth(1);
     }
 
     /**
@@ -217,6 +224,7 @@ public class BezierBottomIndicator extends ViewGroup {
     protected void onDraw(Canvas canvas) {
 
         bezierCircular.drawCircle(canvas, bezierPaint);
+        drawClick(canvas);
         drawChildBg(canvas);
         super.onDraw(canvas);
     }
@@ -260,7 +268,7 @@ public class BezierBottomIndicator extends ViewGroup {
                     updateDrop(position, positionOffset, positionOffsetPixels);
                 }
                 // 页面正在滚动时不断调用
-                Log.d(TAG, "onPageScrolled————>" + "    position：" + position + "    positionOffest：" + positionOffset + "    positionOffsetPixels：" + positionOffsetPixels);
+//                Log.d(TAG, "onPageScrolled————>" + "    position：" + position + "    positionOffest：" + positionOffset + "    positionOffsetPixels：" + positionOffsetPixels);
             }
 
             @Override
@@ -278,12 +286,12 @@ public class BezierBottomIndicator extends ViewGroup {
                     bezierCircular.setProgress(direction ? 1.0f : -1.0f);
                     currentPosition = targetPosition;
 
-                    Log.i(TAG, "currentPosition::::" + currentPosition);
+//                    Log.i(TAG, "currentPosition::::" + currentPosition);
                     bezierPaint.setColor(circularColors.size() > 0 ? circularColors.get(currentPosition) : circularColor);
                     bezierCircular.resetCircular(anchorList.get(currentPosition));
                     postInvalidate();
                 }
-                Log.i(TAG, "onPageScrollStateChanged————>    state：" + state);
+//                Log.i(TAG, "onPageScrollStateChanged————>    state：" + state);
             }
         });
     }
@@ -310,7 +318,7 @@ public class BezierBottomIndicator extends ViewGroup {
 
         currentProgress = positionOffset;
 
-        Log.e(TAG, "direction:::" + direction + "     currentPosition:::" + currentPosition + "     targetPosition:::" + targetPosition);
+//        Log.e(TAG, "direction:::" + direction + "     currentPosition:::" + currentPosition + "     targetPosition:::" + targetPosition);
         bezierCircular.setCurrentAndTarget(anchorList.get(currentPosition), anchorList.get(targetPosition));
         bezierCircular.setProgress(direction ? positionOffset : positionOffset - 1);
 
@@ -333,6 +341,7 @@ public class BezierBottomIndicator extends ViewGroup {
             targetPosition = position;
             isAnimatorStart = true;
             startAnimator(); //开始动画
+            clickAnimator(); //点击效果
             if (viewPager != null) {
                 viewPager.setCurrentItem(position);
             }
@@ -352,6 +361,13 @@ public class BezierBottomIndicator extends ViewGroup {
             PointF pointF = anchorList.get(i);
             canvas.drawCircle(pointF.x, pointF.y, (childSideLength - 4) / 2, childBgPaint);
         }
+    }
+
+    //绘制点击效果
+    private void drawClick(Canvas canvas) {
+        PointF pointF = anchorList.get(targetPosition);
+
+        canvas.drawCircle(pointF.x, pointF.y, clickRadius, clickPaint);
     }
 
     /**
@@ -391,8 +407,39 @@ public class BezierBottomIndicator extends ViewGroup {
     }
 
 
+    private float clickRadius = 0;
+
+    private void clickAnimator() {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float progress = (float) animation.getAnimatedValue();
+
+                clickRadius = (childSideLength / 3) * progress;
+                clickPaint.setStrokeWidth(childSideLength / 3 * progress);
+                postInvalidate();
+            }
+        });
+
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                clickRadius = 0;
+                clickPaint.setStrokeWidth(0);
+                postInvalidate();
+                super.onAnimationEnd(animation);
+            }
+        });
+
+        valueAnimator.setDuration(260);
+        valueAnimator.start();
+    }
+
+
+    //颜色变换
     private int setCircularColor(float progress) {
-        // 3颜色等比线性变换
         int startColor = circularColors.get(currentPosition);
         int endColor = circularColors.get(targetPosition);
 
