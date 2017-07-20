@@ -186,7 +186,7 @@ public class BezierBottomIndicator extends ViewGroup {
         if (getChildCount() != 0) {
             childSideLength = (width - getPaddingRight() - getPaddingLeft()) / getChildCount() > height - getPaddingBottom() - getPaddingTop() ? height - getPaddingBottom() - getPaddingTop() : (width - getPaddingLeft() - getPaddingRight()) / getChildCount();
 //        //计算出所有的ChildView的宽和高
-            measureChildren(widthMeasureSpec, heightMeasureSpec);
+//            measureChildren(widthMeasureSpec, heightMeasureSpec);
             bezierCircular = new BezierCircular(childSideLength / 2);
         }
 
@@ -200,9 +200,7 @@ public class BezierBottomIndicator extends ViewGroup {
         if (childCount == 0) {
             return;
         }
-
         float childDis = (width - getPaddingLeft() - getPaddingRight() - 2 * defaultLeftRightGap - childSideLength) / (childCount - 1);
-
         float cWidth = childSideLength - 2 * childPadding;
         float cHeight = cWidth;
 
@@ -223,11 +221,8 @@ public class BezierBottomIndicator extends ViewGroup {
     @Override
     protected void onDraw(Canvas canvas) {
 
-
-
         drawChildBg(canvas);
         bezierCircular.drawCircle(canvas, bezierPaint);
-
         drawClick(canvas);
         super.onDraw(canvas);
     }
@@ -271,12 +266,12 @@ public class BezierBottomIndicator extends ViewGroup {
                     updateDrop(position, positionOffset, positionOffsetPixels);
                 }
                 // 页面正在滚动时不断调用
-//                Log.d(TAG, "onPageScrolled————>" + "    position：" + position + "    positionOffest：" + positionOffset + "    positionOffsetPixels：" + positionOffsetPixels);
+                Log.d(TAG, "onPageScrolled————>" + "    position：" + position + "    positionOffest：" + positionOffset + "    positionOffsetPixels：" + positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
-//                Log.d(TAG, "onPagerSelected————>    position：" + position);
+                Log.e(TAG, "onPagerSelected————>    position：" + position);
                 isSelected = true;
             }
 
@@ -294,7 +289,7 @@ public class BezierBottomIndicator extends ViewGroup {
                     bezierCircular.resetCircular(anchorList.get(currentPosition));
                     postInvalidate();
                 }
-//                Log.i(TAG, "onPageScrollStateChanged————>    state：" + state);
+                Log.i(TAG, "onPageScrollStateChanged————>    state：" + state);
             }
         });
     }
@@ -303,8 +298,10 @@ public class BezierBottomIndicator extends ViewGroup {
     float lastProgress = 0;
     float currentProgress = 0;
 
+
     //滑动ViewPager时更新指示器的动画
     private void updateDrop(int position, float positionOffset, int positionOffsetPixels) {
+
         if ((position + positionOffset) - currentPosition > 0) {
             direction = true;
         } else if ((position + positionOffset) - currentPosition < 0) {
@@ -323,7 +320,6 @@ public class BezierBottomIndicator extends ViewGroup {
 
 //        Log.e(TAG, "direction:::" + direction + "     currentPosition:::" + currentPosition + "     targetPosition:::" + targetPosition);
         bezierCircular.setCurrentAndTarget(anchorList.get(currentPosition), anchorList.get(targetPosition));
-        bezierCircular.setProgress(direction ? positionOffset : positionOffset - 1);
 
         if (currentProgress == 0 && lastProgress > 0.9) {
             if (lastProgress > 0.9) {
@@ -333,6 +329,8 @@ public class BezierBottomIndicator extends ViewGroup {
                 currentProgress = 0;
             }
         }
+
+        bezierCircular.setProgress(direction ? currentProgress : currentProgress - 1);
         bezierPaint.setColor(circularColors.size() > 0 ? setCircularColor(direction ? currentProgress : 1 - currentProgress) : circularColor);
         invalidate();
         lastProgress = currentProgress;
@@ -340,7 +338,7 @@ public class BezierBottomIndicator extends ViewGroup {
 
 
     private void onClickIndex(int position) {
-        if (!isAnimatorStart && !isViewPagerScoll) {
+        if (!isAnimatorStart && !isViewPagerScoll && position != currentPosition) {
             targetPosition = position;
             isAnimatorStart = true;
             startAnimator(); //开始动画

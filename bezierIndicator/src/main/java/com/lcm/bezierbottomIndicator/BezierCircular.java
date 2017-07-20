@@ -116,12 +116,13 @@ public class BezierCircular {
             model4(progress);
         } else if ((progress > 0.9 && progress < 1) || (progress < -0.9 && progress > -1)) {
             model5(progress);
-        } else if (progress >= 1 || progress <= -1) {
-//            Log.i(TAG,"-------------------------------------------");
-//            centerX = targetPoint.x;
-//            centerY = targetPoint.y;
-//            initCotrlPoint();
         }
+//        } else if (progress >= 1 || progress <= -1) {
+//            Log.i(TAG,"-------------------------------------------");
+////            centerX = targetPoint.x;
+////            centerY = targetPoint.y;
+////            initControlPoint();
+//        }
     }
 
 
