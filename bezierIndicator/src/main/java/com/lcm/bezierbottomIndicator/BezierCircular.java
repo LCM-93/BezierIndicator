@@ -53,9 +53,7 @@ public class BezierCircular {
     }
 
 
-    /**
-     * 更精细的绘制圆，绘制小球的回弹效果
-     */
+
     public void initControlPoint() {
 
         //初始化数据点
@@ -374,12 +372,7 @@ public class BezierCircular {
     }
 
 
-    /**
-     * 通过三阶贝塞尔曲线更精细的绘制圆，绘制小球的回弹效果
-     *
-     * @param canvas
-     * @param mPaint
-     */
+
     public void drawCircle(Canvas canvas, Paint mPaint) {
         Path path = new Path();
         path.moveTo(mData[0], mData[1]);
