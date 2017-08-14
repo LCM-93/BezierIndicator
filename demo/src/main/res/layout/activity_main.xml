@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#21293A">
+    android:background="#21293A"
+    android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        >
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="bottom"
+        android:background="@color/colorAccent"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingEnd="@dimen/card_padding"
+        android:paddingLeft="@dimen/card_padding"
+        android:paddingRight="@dimen/card_padding"
+        android:paddingStart="@dimen/card_padding">
 
     </android.support.v4.view.ViewPager>
-
-
 
 
     <com.lcm.bezierbottomIndicator.BezierBottomIndicator
         android:id="@+id/bezierBottomIndicator"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
         app:childPadding="12dp"
@@ -53,4 +59,4 @@
             android:src="@mipmap/iv_message" />
 
     </com.lcm.bezierbottomIndicator.BezierBottomIndicator>
-</LinearLayout>
+</RelativeLayout>
