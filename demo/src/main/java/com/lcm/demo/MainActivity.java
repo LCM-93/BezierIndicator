@@ -1,6 +1,7 @@
 package com.lcm.demo;
 
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.lcm.bezierbottomIndicator.BezierBottomIndicator;
@@ -22,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private BezierBottomIndicator bezierBottomIndicator;
 
     private ViewPager viewPager;
-//    private List<View> viewList;
+    //    private List<View> viewList;
     private List<Integer> images;
 
     private MyAdapter myAdapter;
@@ -61,15 +64,18 @@ public class MainActivity extends AppCompatActivity {
         myAdapter = new MyAdapter(images);
 
         mCardShadowTransformer = new ShadowTransformer(viewPager, myAdapter);
+        mCardShadowTransformer.enableScaling(true);
         viewPager.setAdapter(myAdapter);
-        viewPager.setPageTransformer(false,mCardShadowTransformer);
+        viewPager.setPageTransformer(false, mCardShadowTransformer);
         viewPager.setOffscreenPageLimit(3);
 
         bezierBottomIndicator.setCircularColors(Color.parseColor("#FCC04D"), Color.parseColor("#00C3E2"), Color.parseColor("#FE626D"), Color.parseColor("#966ACF"));
 
         bezierBottomIndicator.setViewPager(viewPager);
 
+
     }
+
 
 
 }

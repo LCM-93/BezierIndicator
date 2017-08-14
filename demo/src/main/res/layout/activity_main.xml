@@ -7,13 +7,14 @@
     android:background="#21293A"
     android:orientation="vertical">
 
+
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="190dp"
         android:layout_centerInParent="true"
         android:layout_gravity="bottom"
-        android:background="@color/colorAccent"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingEnd="@dimen/card_padding"

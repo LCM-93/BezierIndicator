@@ -2,6 +2,7 @@ package com.lcm.bezierbottomIndicator.viewpager;
 
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 
 
@@ -10,7 +11,7 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
     private ViewPager mViewPager;
     private CardAdapter mAdapter;
     private float mLastOffset;
-    private boolean mScalingEnabled;
+    private boolean mScalingEnabled ;
 
     public ShadowTransformer(ViewPager viewPager, CardAdapter adapter) {
         mViewPager = viewPager;
@@ -30,8 +31,8 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
             // grow main card
             CardView currentCard = mAdapter.getCardViewAt(mViewPager.getCurrentItem());
             if (currentCard != null) {
-                currentCard.animate().scaleY(1.1f);
-                currentCard.animate().scaleX(1.1f);
+                currentCard.animate().scaleY(1.2f);
+                currentCard.animate().scaleX(1.2f);
             }
         }
 
@@ -75,8 +76,8 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         // and the views weren't created yet
         if (currentCard != null) {
             if (mScalingEnabled) {
-                currentCard.setScaleX((float) (1 + 0.1 * (1 - realOffset)));
-                currentCard.setScaleY((float) (1 + 0.1 * (1 - realOffset)));
+                currentCard.setScaleX((float) (1 + 0.2 * (1 - realOffset)));
+                currentCard.setScaleY((float) (1 + 0.2 * (1 - realOffset)));
             }
             currentCard.setCardElevation((baseElevation + baseElevation
                     * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * (1 - realOffset)));
@@ -88,8 +89,8 @@ public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPa
         // was already destroyed or a fragment might not have been created yet
         if (nextCard != null) {
             if (mScalingEnabled) {
-                nextCard.setScaleX((float) (1 + 0.1 * (realOffset)));
-                nextCard.setScaleY((float) (1 + 0.1 * (realOffset)));
+                nextCard.setScaleX((float) (1 + 0.2 * (realOffset)));
+                nextCard.setScaleY((float) (1 + 0.2 * (realOffset)));
             }
             nextCard.setCardElevation((baseElevation + baseElevation
                     * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * (realOffset)));

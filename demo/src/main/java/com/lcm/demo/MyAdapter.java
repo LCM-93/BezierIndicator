@@ -22,7 +22,7 @@ import java.util.List;
 
 public class MyAdapter extends PagerAdapter implements CardAdapter {
 
-    private float mBaseElevation;
+    private float mBaseElevation ;
     private List<Integer> images;
     private List<CardView> cardViewList;
 
@@ -41,7 +41,7 @@ public class MyAdapter extends PagerAdapter implements CardAdapter {
 
     @Override
     public CardView getCardViewAt(int position) {
-        return null;
+        return cardViewList.get(position);
     }
 
     @Override
