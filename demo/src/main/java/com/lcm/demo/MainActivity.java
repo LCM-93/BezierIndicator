@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(myAdapter);
         viewPager.setOffscreenPageLimit(3);
-//        viewPager.showShadowTransformer(0.1f);
+        viewPager.showShadowTransformer(0.2f);
 
 
         bezierBottomIndicator.setCircularColors(Color.parseColor("#FCC04D"), Color.parseColor("#00C3E2"), Color.parseColor("#FE626D"), Color.parseColor("#966ACF"));
