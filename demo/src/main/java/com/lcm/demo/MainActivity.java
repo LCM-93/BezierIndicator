@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.lcm.bezierbottomIndicator.BezierBottomIndicator;
+import com.lcm.bezierbottomIndicator.viewpager.BezierViewPager;
 import com.lcm.bezierbottomIndicator.viewpager.CardAdapter;
 import com.lcm.bezierbottomIndicator.viewpager.ShadowTransformer;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BezierBottomIndicator bezierBottomIndicator;
 
-    private ViewPager viewPager;
+    private BezierViewPager viewPager;
     //    private List<View> viewList;
     private List<Integer> images;
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         images = new ArrayList<>();
 
         bezierBottomIndicator = (BezierBottomIndicator) findViewById(R.id.bezierBottomIndicator);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (BezierViewPager) findViewById(R.id.viewpager);
 
 
         images.add(R.mipmap.pos0);
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 
 
 }

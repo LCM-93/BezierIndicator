@@ -402,7 +402,7 @@ public class BezierBottomIndicator extends ViewGroup {
         if (count == 0) {
             return;
         }
-        int duration = 600;
+        int duration = 500;
         valueAnimator.setDuration(duration);
         valueAnimator.start();
     }
