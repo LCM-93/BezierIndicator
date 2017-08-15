@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 
 public class BezierViewPager extends ViewPager {
     private boolean touchable = true;
-
+    private ShadowTransformer shadowTransformer;
 
     public BezierViewPager(Context context) {
         super(context);
@@ -53,6 +53,17 @@ public class BezierViewPager extends ViewPager {
             return super.onInterceptTouchEvent(arg0);
         } else {
             return false;
+        }
+    }
+
+
+    public void showShadowTransformer(float scaleVal) {
+        if (CardAdapter.class.isInstance(getAdapter())) {
+            if (shadowTransformer == null) {
+                shadowTransformer = new ShadowTransformer(this, (CardAdapter) getAdapter());
+            }
+            shadowTransformer.enableScaling(true);
+            shadowTransformer.setmScaleValue(scaleVal);
         }
     }
 

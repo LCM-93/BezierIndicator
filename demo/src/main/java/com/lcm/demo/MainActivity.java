@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Integer> images;
 
     private MyAdapter myAdapter;
-    private ShadowTransformer mCardShadowTransformer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +47,11 @@ public class MainActivity extends AppCompatActivity {
         images.add(R.mipmap.pos3);
 
 
-
         myAdapter = new MyAdapter(images);
 
-        mCardShadowTransformer = new ShadowTransformer(viewPager, myAdapter);
-        mCardShadowTransformer.enableScaling(true);
         viewPager.setAdapter(myAdapter);
-        viewPager.setPageTransformer(false, mCardShadowTransformer);
         viewPager.setOffscreenPageLimit(3);
-
+//        viewPager.showShadowTransformer(0.1f);
 
 
         bezierBottomIndicator.setCircularColors(Color.parseColor("#FCC04D"), Color.parseColor("#00C3E2"), Color.parseColor("#FE626D"), Color.parseColor("#966ACF"));
