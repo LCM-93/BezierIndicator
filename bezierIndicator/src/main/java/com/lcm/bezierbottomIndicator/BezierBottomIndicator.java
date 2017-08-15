@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
 
+import com.lcm.bezierbottomIndicator.viewpager.BezierViewPager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -255,7 +257,7 @@ public class BezierBottomIndicator extends ViewGroup {
 
     private boolean isSelected = false;
 
-    public void setViewPager(ViewPager viewPager) {
+    public void setViewPager(final ViewPager viewPager) {
         this.viewPager = viewPager;
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -267,6 +269,8 @@ public class BezierBottomIndicator extends ViewGroup {
                 }
                 // 页面正在滚动时不断调用
                 Log.d(TAG, "onPageScrolled————>" + "    position：" + position + "    positionOffest：" + positionOffset + "    positionOffsetPixels：" + positionOffsetPixels);
+
+
             }
 
             @Override
@@ -277,6 +281,12 @@ public class BezierBottomIndicator extends ViewGroup {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                //通过滑动状态 控制Viewpager能否滑动  解决连续滑动ViewPager 指示器出错问题
+                if (viewPager instanceof BezierViewPager) {
+                    BezierViewPager bezierViewPager = (BezierViewPager) viewPager;
+                    bezierViewPager.setTouchable(state != 2);
+                }
+
                 if (state == 0 && isSelected && !isAnimatorStart) {
 //                    Log.e(TAG, "onPageScrollStateChanged————>    设置状态：");
                     isSelected = false;
@@ -402,7 +412,7 @@ public class BezierBottomIndicator extends ViewGroup {
         if (count == 0) {
             return;
         }
-        int duration = 500;
+        int duration = 450;
         valueAnimator.setDuration(duration);
         valueAnimator.start();
     }

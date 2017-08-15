@@ -3,6 +3,8 @@ package com.lcm.bezierbottomIndicator.viewpager;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
@@ -18,6 +20,7 @@ import java.lang.reflect.Field;
  */
 
 public class BezierViewPager extends ViewPager {
+    private boolean touchable = true;
 
 
     public BezierViewPager(Context context) {
@@ -30,9 +33,28 @@ public class BezierViewPager extends ViewPager {
         changeViewPageScroller();
     }
 
+    public void setTouchable(boolean touchable) {
+        this.touchable = touchable;
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent arg0) {
+        if (touchable) {
+            return super.onTouchEvent(arg0);
+        } else {
+            return false;
+        }
 
+    }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent arg0) {
+        if (touchable) {
+            return super.onInterceptTouchEvent(arg0);
+        } else {
+            return false;
+        }
+    }
 
 
     //反射机制 控制 viewpager滑动时间  为800
@@ -49,7 +71,7 @@ public class BezierViewPager extends ViewPager {
     }
 
     class FixedSpeedScroller extends Scroller {
-        private int mDuration = 450;
+        private int mDuration = 400;
 
         public FixedSpeedScroller(Context context) {
             super(context);
