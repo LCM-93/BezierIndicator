@@ -63,7 +63,7 @@ public class BezierViewPager extends ViewPager {
                 shadowTransformer = new ShadowTransformer(this, (CardAdapter) getAdapter());
             }
             shadowTransformer.enableScaling(true);
-            shadowTransformer.setmScaleValue(scaleVal);
+            shadowTransformer.setScaleValue(scaleVal);
         }
     }
 
