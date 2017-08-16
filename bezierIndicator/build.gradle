@@ -58,3 +58,33 @@ artifacts {
     archives generateJavadocsJar
     archives generateSourcesJar
 }
+
+
+//需要在local.properties文件中取值
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    pkg {
+        repo = 'maven'
+        name = 'com.lcm.bezierIndicator'
+
+        version {
+            name = '1.0.0'
+            desc = "BezierIndicator"
+            released = new Date()
+            vcsTag = '1.0.0'
+        }
+
+
+
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/lichenming0516/BezierIndicator.git'
+        websiteUrl = 'https://github.com/lichenming0516/BezierIndicator'
+    }
+
+    configurations = ['archives']
+}
