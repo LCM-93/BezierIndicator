@@ -9,7 +9,7 @@
 
 
 
-    <com.lcm.bezierbottomIndicator.viewpager.BezierViewPager
+    <com.lcm.bezierIndicator.viewpager.BezierViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="190dp"
@@ -22,10 +22,10 @@
         android:paddingRight="@dimen/card_padding"
         android:paddingStart="@dimen/card_padding">
 
-    </com.lcm.bezierbottomIndicator.viewpager.BezierViewPager>
+    </com.lcm.bezierIndicator.viewpager.BezierViewPager>
 
 
-    <com.lcm.bezierbottomIndicator.BezierBottomIndicator
+    <com.lcm.bezierIndicator.BezierBottomIndicator
         android:id="@+id/bezierBottomIndicator"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -59,5 +59,5 @@
             android:scaleType="fitCenter"
             android:src="@mipmap/iv_message" />
 
-    </com.lcm.bezierbottomIndicator.BezierBottomIndicator>
+    </com.lcm.bezierIndicator.BezierBottomIndicator>
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.lcm.bezierbottomIndicator.viewpager;
+package com.lcm.bezierIndicator.viewpager;
 
 
 import android.support.v7.widget.CardView;

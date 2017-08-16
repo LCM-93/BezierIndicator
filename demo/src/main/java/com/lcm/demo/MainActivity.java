@@ -1,22 +1,11 @@
 package com.lcm.demo;
 
 import android.graphics.Color;
-import android.os.SystemClock;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 
-import com.lcm.bezierbottomIndicator.BezierBottomIndicator;
-import com.lcm.bezierbottomIndicator.viewpager.BezierViewPager;
-import com.lcm.bezierbottomIndicator.viewpager.CardAdapter;
-import com.lcm.bezierbottomIndicator.viewpager.ShadowTransformer;
+import com.lcm.bezierIndicator.BezierBottomIndicator;
+import com.lcm.bezierIndicator.viewpager.BezierViewPager;
 
 import java.util.ArrayList;
 import java.util.List;

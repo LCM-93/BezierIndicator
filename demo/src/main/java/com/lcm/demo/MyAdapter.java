@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.lcm.bezierbottomIndicator.viewpager.CardAdapter;
+import com.lcm.bezierIndicator.viewpager.CardAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

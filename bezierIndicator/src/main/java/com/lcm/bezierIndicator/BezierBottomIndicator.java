@@ -1,4 +1,4 @@
-package com.lcm.bezierbottomIndicator;
+package com.lcm.bezierIndicator;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -17,9 +17,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.OvershootInterpolator;
 
-import com.lcm.bezierbottomIndicator.viewpager.BezierViewPager;
+import com.lcm.bezierIndicator.viewpager.BezierViewPager;
 
 import java.util.ArrayList;
 import java.util.List;

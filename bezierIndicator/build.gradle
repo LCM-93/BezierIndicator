@@ -1,10 +1,16 @@
 apply plugin: 'com.android.library'
-
-
-// JitPack Maven
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
-// Your Group
-group='com.github.lichenming0516'
+
+
+//// JitPack Maven
+//apply plugin: 'com.github.dcendents.android-maven'
+//// Your Group
+//group='com.github.lichenming0516'
+
+//JCenter 添加
+//group = 'com.lcm.bezierIndicator' // 这里需要和真实包名对应，不能随便填写
+//version = '1.0.1' // 指定版本号
 
 
 android {
