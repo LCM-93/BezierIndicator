@@ -1,5 +1,12 @@
 apply plugin: 'com.android.library'
 
+
+// JitPack Maven
+apply plugin: 'com.github.dcendents.android-maven'
+// Your Group
+group='com.github.lichenming0516'
+
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -23,3 +30,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
 }
+
